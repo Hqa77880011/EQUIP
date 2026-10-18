@@ -42,6 +42,20 @@ Comparisons include majority votes, style-weighted static debate aggregation, va
 
 `configs/default.json` sets horizon, seed, role corridors, probe rate, inclusion propensity, debt and primal steps, and generated panel quality/style. The main `rounds.csv` records utility, attacks, probe calls/cost and queue totals; `trace.json` retains weights, signed influence estimates, evaluation counterfactual effects and debts. `metrics.json` summarizes collective utility, manipulation success, probe cost and cumulative corridor violation. The trace stores decision-time `weights` alongside `next_weights` and the actual controller bounds. The equal-corridor control equalizes both lower and upper bounds. All methods are scored against the original declared role corridors, so ablation violations remain comparable. Comparison CSV/JSON and PNG/SVG plots are computed from run outputs. Imported panel counts must match the role arrays. Training/test group overlap is rejected.
 
+## Registered compact reproduction setting
+
+Six-agent frozen categorical panels, disjoint generated competence-training and decision groups, fixed role corridors and 200 decision rounds.
+
+Run from the repository root after installation. The following commands use the registered setting; they are provided for execution and have not been run as part of the source review.
+
+```bash
+equip prepare --config configs/reproduce.json --data data/reproduce
+equip train --config configs/reproduce.json --data data/reproduce --output checkpoints/reproduce
+equip compare --config configs/reproduce.json --data data/reproduce --checkpoint checkpoints/reproduce/quality.json --output runs/reproduce
+```
+
+This setting needs no external dataset or pretrained weights. Generated inputs and declared fault/shift laws define the finite task; reported quantities retain that provenance.
+
 ## Multiple seeds
 
 Run matched configurations with different seeds in separate directories, then aggregate the generated metric files:
