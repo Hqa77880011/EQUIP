@@ -80,7 +80,15 @@ def run(a, c, method):
         raise ValueError(
             "Require positive probe coverage and inclusion propensity strictly between 0 and 1"
         )
+    control_upper = np.array(c["upper"], float)
+    control_lower = np.array(c["lower"], float)
+    if method == "equal_corridor":
+        control_upper[:] = control_upper.mean()
+        control_lower[:] = control_lower.mean()
+    elif method == "no_lower":
+        control_lower[:] = 0
     for t, r in enumerate(records):
+        decision_weights = weights.copy()
         messages = np.array(r["messages"])
         style = np.ones(n) if method == "majority" else np.array(c["style"])
         if method == "majority":
@@ -103,14 +111,8 @@ def run(a, c, method):
         true_effect = influence(messages, weights, style, outcome)
         cumulative += true_effect
         if method in ("equip", "equal_corridor", "no_lower"):
-            upper = (
-                np.array(c["upper"])
-                if method != "equal_corridor"
-                else np.full(n, np.mean(c["upper"]))
-            )
-            lower = np.zeros(n) if method == "no_lower" else np.array(c["lower"])
-            plus = np.maximum(0, plus + c["debt_step"] * (estimate - upper))
-            minus = np.maximum(0, minus + c["debt_step"] * (lower - estimate))
+            plus = np.maximum(0, plus + c["debt_step"] * (estimate - control_upper))
+            minus = np.maximum(0, minus + c["debt_step"] * (control_lower - estimate))
             weights = control(
                 messages, weights, style, outcome, quality, plus, minus, c["step"]
             )
@@ -132,7 +134,10 @@ def run(a, c, method):
             dict(
                 id=r["id"],
                 prediction=prediction,
-                weights=weights.copy(),
+                weights=decision_weights,
+                next_weights=weights.copy(),
+                control_upper=control_upper.copy(),
+                control_lower=control_lower.copy(),
                 estimate=estimate,
                 influence=true_effect,
                 upper=plus.copy(),

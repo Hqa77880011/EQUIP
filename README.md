@@ -40,7 +40,7 @@ Comparisons include majority votes, style-weighted static debate aggregation, va
 
 ## Configuration and outputs
 
-`configs/default.json` sets horizon, seed, role corridors, probe rate, inclusion propensity, debt and primal steps, and generated panel quality/style. The main `rounds.csv` records utility, attacks, probe calls/cost and queue totals; `trace.json` retains weights, signed influence estimates, evaluation counterfactual effects and debts. `metrics.json` summarizes collective utility, manipulation success, probe cost and cumulative corridor violation. Comparison CSV/JSON and PNG/SVG plots are computed from run outputs. Imported panel counts must match the role arrays. Training/test group overlap is rejected.
+`configs/default.json` sets horizon, seed, role corridors, probe rate, inclusion propensity, debt and primal steps, and generated panel quality/style. The main `rounds.csv` records utility, attacks, probe calls/cost and queue totals; `trace.json` retains weights, signed influence estimates, evaluation counterfactual effects and debts. `metrics.json` summarizes collective utility, manipulation success, probe cost and cumulative corridor violation. The trace stores decision-time `weights` alongside `next_weights` and the actual controller bounds. The equal-corridor control equalizes both lower and upper bounds. All methods are scored against the original declared role corridors, so ablation violations remain comparable. Comparison CSV/JSON and PNG/SVG plots are computed from run outputs. Imported panel counts must match the role arrays. Training/test group overlap is rejected.
 
 ## Multiple seeds
 
